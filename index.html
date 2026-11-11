@@ -4,14 +4,169 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/Portfolio.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>room-portfolio</title>
+    <title>Gaurie Sharma</title>
+    <link rel="stylesheet" href="./src/style.scss">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   </head>
-  <body>
+  <body class="loading">
+<!-- ##########################################################Hamburger Menu############################################################## -->
+    <button id="menu-btn" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+    </button>
+
+    <nav id="menu" >
+    <h2>Explore</h2>
+    <ul id="menu-list"></ul>
+    <p class="menu-hint">🎹 The piano is playable<br>🐱 Surprise: try clicking the cat</p>
+    </nav>
+<!-- ##########################################################Loading Window############################################################## -->
+    <div id="preloader">
+        <h1>Thank you for visiting my portfolio!</h1>
+        <div id="bar-wrap"><div id="bar"></div></div>
+        <p>Loading <span id="percent">0</span>%</p>
+     </div>
+<!-- ###############################################################Setup################################################################## -->
     <div id="app"></div>
 
-    <div class="experience">
-      <canvas class="experience-canvas"></canvas>
+    <div id="experience">
+      <canvas id="experience-canvas" class="experience-canvas"></canvas>
     </div>
-    <script type="module" src="/src/main.js"></script>
+<!-- ##########################################################About Me Modal############################################################## -->
+    <div id="about-me-modal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>About Me</h2>
+          <button id="close-about-me-modal" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <p id="aboutmeText">
+                Hi, I'm Gaurie 👋 <br>
+                I'm a software engineer who gets equally excited about fine-tuning an AI model and 
+                building an app that recommends music by swiping left or right. Somewhere between 
+                "serious engineering" and "fun little side project," that's where I like to live. 
+                <br>
+                I just finished my Master's in Software Engineering at UT Arlington (undergrad too
+                 — I basically never left), and along the way I ended up teaching other students as
+                 a TA, which taught me a lot about explaining things without making people's eyes 
+                glaze over. <br>
+                At eClinicalWorks, I built NLP tools and helped optimize an AI product to hit 90%+ 
+                accuracy — but honestly, my favorite part was talking to 15+ healthcare practices 
+                and realizing the best ideas come from listening, not guessing. <br>
+                I code in Python, JavaScript, React, Java, and a few others, but what I really 
+                enjoy is turning an idea into something people actually want to use. <br>
+                Currently exploring what's next — let's build something good.
+              </p>
+        </div>
+      </div>
+    </div>
+<!-- #########################################################Resume Modal################################################################ -->
+    <div id="resume-modal" class="modal hidden">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h2>My Resume</h2>
+              <button id="close-resume-modal" class="modal-close">×</button>
+          </div>
+          <div class="modal-body">
+              <img src="images/resume.png" alt="Gaurie Sharma Resume" class="resume-preview" />
+              <a href="/resume.pdf" download="Resume.pdf" class="download-btn">Download Resume</a>
+          </div>
+      </div>
+    </div>
+<!-- #######################################################Projects Modal################################################################ -->
+    <div id="projects-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>My Projects</h2>
+                <button id="close-projects-modal" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+              <p id="projectsText">
+                <h3> Crop'n'Drip </h3>
+                <h3> ServQuest </h3>
+                <h3> Compilex </h3>
+                <h3> Song Oracle </h3>
+              </p>
+            </div>
+        </div>
+    </div>
+<!-- #######################################################Experience Modal############################################################## -->
+    <div id="experience-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Experience</h2>
+                <button id="close-experience-modal" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="experience-modal-content"></div>
+            </div>
+        </div>
+    </div>
+<!-- #######################################################Achievements Modal############################################################ -->
+    <div id="achievements-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Achievements</h2>
+                <button id="close-achievements-modal" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="achievementsText">
+                  <h3> 3rd Place in HackUTA 2024 </h3>
+                  <h3> Grace Hopper Scholarship 2021 </h3>
+                </p>
+            </div>
+        </div>
+    </div>
+<!-- #########################################################Contact Modal############################################################### -->
+    <div id="contact-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Contact Me</h2>
+                <button id="close-contact-modal" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="contact-form">
+                    <input type="text" id="from-name" placeholder="Your name" required>
+                    <input type="email" id="from-email" placeholder="Your email" required>
+                    <textarea id="message" placeholder="Your message" required></textarea>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+<!-- #########################################################Naigation Directions############################################################### -->
+    <div id="controls-hint" aria-label="Mouse controls">
+    <div class="hint-row">
+        <!-- Left click: mouse with left button highlighted -->
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="6" y="2" width="12" height="20" rx="6"/>
+        <path d="M12 2v8M6 10h12"/>
+        <path d="M12 2H12a6 6 0 0 0-6 6v2h6z" fill="currentColor" stroke="none"/>
+        </svg>
+        <span><strong>Left click + drag</strong> to rotate</span>
+    </div>
+
+    <div class="hint-row">
+        <!-- Right click: mouse with right button highlighted -->
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="6" y="2" width="12" height="20" rx="6"/>
+        <path d="M12 2v8M6 10h12"/>
+        <path d="M12 2h0a6 6 0 0 1 6 6v2h-6z" fill="currentColor" stroke="none"/>
+        </svg>
+        <span><strong>Right click + drag</strong> to move around</span>
+    </div>
+
+    <div class="hint-row">
+        <!-- Scroll: mouse with wheel and arrows -->
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="6" y="2" width="12" height="20" rx="6"/>
+        <path d="M12 6v4"/>
+        <path d="M3 8l-1.5 2L3 12M21 8l1.5 2-1.5 2" opacity="0"/>
+        <path d="M22 7l-2-2-2 2M22 17l-2 2-2-2"/>
+        </svg>
+        <span><strong>Scroll</strong> to zoom</span>
+    </div>
+    </div>
+
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

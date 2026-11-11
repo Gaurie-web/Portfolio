@@ -1,0 +1,54 @@
+.vertical-timeline--two-columns::before {
+  left: 50% !important;
+  margin-left: -1px;
+}
+
+/* 1st, 3rd, 5th... on the left */
+.vertical-timeline--two-columns .vertical-timeline-element:nth-child(odd) .vertical-timeline-element-content {
+  float: left;
+  text-align: right;
+}
+
+/* 2nd, 4th, 6th... on the right */
+.vertical-timeline--two-columns .vertical-timeline-element:nth-child(even) .vertical-timeline-element-content {
+  float: right;
+  text-align: left;
+}
+
+.vertical-timeline--two-columns .vertical-timeline-element-icon {
+  left: 50% !important;
+  margin-left: -22px !important;
+}
+
+.vertical-timeline--two-columns .vertical-timeline-element-content {
+  width: 45% !important;
+  margin-left: 0 !important;
+}
+
+/* Give cards a visible background so arrows have something to attach to */
+.vertical-timeline-element-content {
+  background: #ceeaec !important;
+  box-shadow: none !important;
+}
+
+/* Date: unfloat it and align it per side */
+.vertical-timeline--two-columns .vertical-timeline-element .vertical-timeline-element-date {
+  float: none !important;
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Arrows: left cards point right, right cards point left */
+.vertical-timeline--two-columns .vertical-timeline-element:nth-child(odd) .vertical-timeline-element-content-arrow {
+  left: 100% !important;
+  right: auto !important;
+  border-right-color: transparent !important;
+  border-left: 7px solid #f5f5f5 !important;
+}
+.vertical-timeline--two-columns .vertical-timeline-element:nth-child(even) .vertical-timeline-element-content-arrow {
+  right: 100% !important;
+  left: auto !important;
+  border-left-color: transparent !important;
+  border-right: 7px solid #f5f5f5 !important;
+}
