@@ -750,11 +750,13 @@ canvas.addEventListener('touchend', (event) => {
     }
 }, { passive: false });
 
-document.querySelectorAll(MODAL_SELECTOR).forEach((modal) => {
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.add('hidden');
-    });
-});
+//////// If you want to close the modal just click outside the modal window. This closes modal without clicking the close button./////////
+
+// document.querySelectorAll(MODAL_SELECTOR).forEach((modal) => {
+//     modal.addEventListener('click', (e) => {
+//         if (e.target === modal) modal.classList.add('hidden');
+//     });
+// });
 
 ////////////////////////////////////////////////////////////////////Setting up the Camera opening position//////////////////////////////////////////////////////////////////////////
 const scene = new THREE.Scene();
