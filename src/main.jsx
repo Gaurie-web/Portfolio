@@ -69,10 +69,19 @@ function setProgress(p) {
   percentEl.textContent = p;
 }
 
-const hint = document.getElementById('controls-hint');
-// setTimeout(() => { hint.style.opacity = '0'; }, 8000);
-window.addEventListener('pointerdown', () => { hint.style.opacity = '0'; }, { once: true });
-hint.addEventListener('transitionend', () => hint.remove());
+////////////////////////////////////////////////////////////////////Setting up the Navigation Overlay/////////////////////////////////////////////////////////////////////
+// const hint = document.getElementById('controls-hint');
+// // setTimeout(() => { hint.style.opacity = '0'; }, 8000);
+// window.addEventListener('pointerdown', () => { hint.style.opacity = '0'; }, { once: true });
+// hint.addEventListener('transitionend', () => hint.remove());
+const hints = document.querySelectorAll('.controls-hint');
+
+window.addEventListener('pointerdown', () => {
+  hints.forEach(h => {
+    h.style.opacity = '0';
+    h.addEventListener('transitionend', () => h.remove(), { once: true });
+  });
+}, { once: true });
 
 ////////////////////////////////////////////////////////////////////Setting up the loaders////////////////////////////////////////////////////////////////////////////////
 // Model Loaders
