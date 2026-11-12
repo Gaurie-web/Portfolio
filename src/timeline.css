@@ -1,6 +1,38 @@
+:root {
+  --card-bg: #ceeaec;
+}
+
+/* Center line */
 .vertical-timeline--two-columns::before {
+  width: 4px;
   left: 50% !important;
-  margin-left: -1px;
+  margin-left: -2px;
+}
+
+/* Icons: fixed size, centered on the line, always on top */
+.vertical-timeline--two-columns .vertical-timeline-element-icon {
+  width: 44px !important;
+  height: 44px !important;
+  left: 50% !important;
+  margin-left: -22px !important;
+  z-index: 5 !important;
+  box-shadow: none !important;
+}
+
+.vertical-timeline--two-columns .vertical-timeline-element-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+  margin-left: -10px !important;
+  margin-top: -10px !important;
+}
+
+/* Cards */
+.vertical-timeline--two-columns .vertical-timeline-element-content {
+  position: relative;
+  width: calc(50% - 45px) !important;
+  margin-left: 0 !important;
+  background: var(--card-bg) !important;
+  box-shadow: none !important;
 }
 
 /* 1st, 3rd, 5th... on the left */
@@ -15,40 +47,38 @@
   text-align: left;
 }
 
-.vertical-timeline--two-columns .vertical-timeline-element-icon {
-  left: 50% !important;
-  margin-left: -22px !important;
-}
-
-.vertical-timeline--two-columns .vertical-timeline-element-content {
-  width: 45% !important;
-  margin-left: 0 !important;
-}
-
-/* Give cards a visible background so arrows have something to attach to */
-.vertical-timeline-element-content {
-  background: #ceeaec !important;
-  box-shadow: none !important;
-}
-
-/* Date: unfloat it and align it per side */
+/* Date: keep it inside the card */
 .vertical-timeline--two-columns .vertical-timeline-element .vertical-timeline-element-date {
   float: none !important;
   position: static !important;
   display: block !important;
   width: 100% !important;
+  padding: 0 !important;
+  opacity: 1 !important;
 }
 
-/* Arrows: left cards point right, right cards point left */
-.vertical-timeline--two-columns .vertical-timeline-element:nth-child(odd) .vertical-timeline-element-content-arrow {
-  left: 100% !important;
-  right: auto !important;
-  border-right-color: transparent !important;
-  border-left: 7px solid #f5f5f5 !important;
+/* Hide the library's arrow, draw our own */
+.vertical-timeline--two-columns .vertical-timeline-element-content-arrow {
+  display: none !important;
 }
-.vertical-timeline--two-columns .vertical-timeline-element:nth-child(even) .vertical-timeline-element-content-arrow {
-  right: 100% !important;
-  left: auto !important;
-  border-left-color: transparent !important;
-  border-right: 7px solid #f5f5f5 !important;
+
+.vertical-timeline--two-columns .vertical-timeline-element-content::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+}
+
+/* Left cards: arrow points right, toward the line */
+.vertical-timeline--two-columns .vertical-timeline-element:nth-child(odd) .vertical-timeline-element-content::before {
+  left: 100%;
+  border-left-color: var(--card-bg);
+}
+
+/* Right cards: arrow points left, toward the line */
+.vertical-timeline--two-columns .vertical-timeline-element:nth-child(even) .vertical-timeline-element-content::before {
+  right: 100%;
+  border-right-color: var(--card-bg);
 }
