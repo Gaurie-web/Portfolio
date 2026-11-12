@@ -606,65 +606,6 @@ function animate(timestamp) {
 }
 requestAnimationFrame(animate);           // start the loop
 
-////////////////////////////////////////////////////////////////////Setting up the Clicks////////////////////////////////////////////////////////////////////////////////////
-window.addEventListener('click', (event) => {
-    const rect = canvas.getBoundingClientRect();
-    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-    raycaster.setFromCamera(pointer, camera);
-
-    // Check hitboxes first
-    const hitboxIntersects = raycaster.intersectObjects(clickableHitboxes);
-    if (hitboxIntersects.length > 0) {
-        handleHitboxClick(hitboxIntersects[0].object.name);
-        return;
-    }
-
-////////////////////////////////////////////////////////////////////Making sure the piano keys play when clicked///////////////////////////////////////////////////////////////
-    // Then check piano keys
-    const keyIntersects = raycaster.intersectObjects(pianoKeys);
-    if (keyIntersects.length > 0) {
-        const clicked = keyIntersects[0].object;
-        const match = clicked.name.match(/\d+/);
-        const keyNumber = match ? parseInt(match[0]) : null;
-        if (keyNumber !== null) {
-            const note = getNoteForKey(keyNumber);
-            playNote(note);
-        }
-    }
-});
-
-////////////////////////////////////////////////////////////////////Setting up the phone actions///////////////////////////////////////////////////////////////////////////////
-canvas.addEventListener("touchstart", (event) => {
-    event.preventDefault();
-    const rect = canvas.getBoundingClientRect();
-    pointer.x = ((event.touches[0].clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -((event.touches[0].clientY - rect.top) / rect.height) * 2 + 1;
-}, {passive: false});
-
-canvas.addEventListener("touchend", (event) => {
-    event.preventDefault();
-    raycaster.setFromCamera(pointer, camera);
-
-    const hitboxIntersects = raycaster.intersectObjects(clickableHitboxes);
-    if (hitboxIntersects.length > 0) {
-        handleHitboxClick(hitboxIntersects[0].object.name);
-        return;
-    }
-
-    const keyIntersects = raycaster.intersectObjects(pianoKeys);
-    if (keyIntersects.length > 0) {
-        const clicked = keyIntersects[0].object;
-        const match = clicked.name.match(/\d+/);
-        const keyNumber = match ? parseInt(match[0]) : null;
-        if (keyNumber !== null) {
-            const note = getNoteForKey(keyNumber);
-            playNote(note);
-        }
-    }
-}, {passive: false});
-
 ////////////////////////////////////////////////////////////////////Setting up the actions for hitbox////////////////////////////////////////////////////////////////////////////
 const catMeow = new Audio('/sounds/Cat_Meow.wav'); // file in your public/ folder
 catMeow.preload = 'auto';
@@ -742,6 +683,77 @@ document.querySelector('#close-achievements-modal').addEventListener('click', ()
 
 document.querySelector('#close-contact-modal').addEventListener('click', () => {
     document.querySelector('#contact-modal').classList.add('hidden');
+});
+
+////////////////////////////////////////////////////////////////////Setting up the Clicks////////////////////////////////////////////////////////////////////////////////////
+const MODAL_SELECTOR = '[id$="-modal"]:not([id^="close-"])';
+
+function isAnyModalOpen() {
+    return document.querySelector(`${MODAL_SELECTOR}:not(.hidden)`) !== null;
+}
+
+document.addEventListener('click', e => console.log(e.target), true);
+
+canvas.addEventListener('click', (event) => {
+    if (isAnyModalOpen()) return;
+
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(pointer, camera);
+
+    const hitboxIntersects = raycaster.intersectObjects(clickableHitboxes);
+    if (hitboxIntersects.length > 0) {
+        handleHitboxClick(hitboxIntersects[0].object.name);
+        return;
+    }
+
+    const keyIntersects = raycaster.intersectObjects(pianoKeys);
+    if (keyIntersects.length > 0) {
+        const clicked = keyIntersects[0].object;
+        const match = clicked.name.match(/\d+/);
+        const keyNumber = match ? parseInt(match[0]) : null;
+        if (keyNumber !== null) {
+            playNote(getNoteForKey(keyNumber));
+        }
+    }
+});
+
+canvas.addEventListener('touchstart', (event) => {
+    if (isAnyModalOpen()) return;
+    event.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = ((event.touches[0].clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.touches[0].clientY - rect.top) / rect.height) * 2 + 1;
+}, { passive: false });
+
+canvas.addEventListener('touchend', (event) => {
+    if (isAnyModalOpen()) return;
+    event.preventDefault();
+    raycaster.setFromCamera(pointer, camera);
+
+    const hitboxIntersects = raycaster.intersectObjects(clickableHitboxes);
+    if (hitboxIntersects.length > 0) {
+        handleHitboxClick(hitboxIntersects[0].object.name);
+        return;
+    }
+
+    const keyIntersects = raycaster.intersectObjects(pianoKeys);
+    if (keyIntersects.length > 0) {
+        const clicked = keyIntersects[0].object;
+        const match = clicked.name.match(/\d+/);
+        const keyNumber = match ? parseInt(match[0]) : null;
+        if (keyNumber !== null) {
+            playNote(getNoteForKey(keyNumber));
+        }
+    }
+}, { passive: false });
+
+document.querySelectorAll(MODAL_SELECTOR).forEach((modal) => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.add('hidden');
+    });
 });
 
 ////////////////////////////////////////////////////////////////////Setting up the Camera opening position//////////////////////////////////////////////////////////////////////////
