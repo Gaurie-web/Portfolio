@@ -685,15 +685,13 @@ document.querySelector('#close-contact-modal').addEventListener('click', () => {
     document.querySelector('#contact-modal').classList.add('hidden');
 });
 
-////////////////////////////////////////////////////////////////////Setting up the Clicks////////////////////////////////////////////////////////////////////////////////////
+
 const MODAL_SELECTOR = '[id$="-modal"]:not([id^="close-"])';
 
 function isAnyModalOpen() {
     return document.querySelector(`${MODAL_SELECTOR}:not(.hidden)`) !== null;
 }
-
-document.addEventListener('click', e => console.log(e.target), true);
-
+////////////////////////////////////////////////////////////////////Setting up the Clicks////////////////////////////////////////////////////////////////////////////////////
 canvas.addEventListener('click', (event) => {
     if (isAnyModalOpen()) return;
 
@@ -709,6 +707,7 @@ canvas.addEventListener('click', (event) => {
         return;
     }
 
+////////////////////////////////////////////////////////////////////Making sure the piano keys play when clicked///////////////////////////////////////////////////////////////
     const keyIntersects = raycaster.intersectObjects(pianoKeys);
     if (keyIntersects.length > 0) {
         const clicked = keyIntersects[0].object;
@@ -720,6 +719,7 @@ canvas.addEventListener('click', (event) => {
     }
 });
 
+////////////////////////////////////////////////////////////////////Setting up the phone actions///////////////////////////////////////////////////////////////////////////////
 canvas.addEventListener('touchstart', (event) => {
     if (isAnyModalOpen()) return;
     event.preventDefault();
