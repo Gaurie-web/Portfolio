@@ -4,6 +4,9 @@
   box-sizing: border-box;
 }
 
+canvas {
+    z-index: 0;
+}
 
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -186,7 +189,9 @@ body.loading > *:not(#preloader) { visibility: hidden; }
     display: flex;
     align-items: center;
     justify-content: center;
+    inset: 0;
     z-index: 1000;
+    pointer-events: auto;
 
     &.hidden {
         display: none;
@@ -358,31 +363,56 @@ body.loading > *:not(#preloader) { visibility: hidden; }
     }
 }
 
-#controls-hint {
-  display: none;               /* hidden by default (phones/tablets) */
+.controls-hint {
+  display: none;                       /* hidden until we know the device type */
   position: fixed;
-  top: 16px;
-  right: 16px;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
   z-index: 10;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: #f1faee70;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(340px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: hidden;
+  padding: 0.8em 1em;
+  border-radius: 0.9em;
+  background: #f1faee70;;
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   color: #ee6c4d;
-  font-family: system-ui, sans-serif;
-  font-size: 14px;
-  pointer-events: none;        /* so it never blocks clicks on the canvas */
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(12px, 1.2vw + 8px, 15px);   /* scales with screen width */
+  line-height: 1.35;
+  pointer-events: none;                /* never blocks the canvas */
   transition: opacity 0.6s ease;
 }
 
 .hint-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.75em;
 }
-.hint-row + .hint-row { margin-top: 8px; }
+.hint-row + .hint-row { margin-top: 0.6em; }
 
-/* Only show on devices with a mouse/trackpad */
+.hint-row svg {
+  flex: 0 0 auto;
+  width: 2em;
+  height: 2em;
+}
+
+/* Mouse / trackpad devices */
 @media (hover: hover) and (pointer: fine) {
-  #controls-hint { display: block; }
+  #hint-desktop { display: block; }
+}
+
+/* Touch devices */
+@media (hover: none) and (pointer: coarse) {
+  #hint-touch { display: block; }
+}
+
+/* Short landscape phones: tighten up so it fits */
+@media (max-height: 420px) {
+  .controls-hint { font-size: 11px; padding: 0.6em 0.8em; }
+  .hint-row + .hint-row { margin-top: 0.4em; }
+  .hint-row svg { width: 1.6em; height: 1.6em; }
 }
