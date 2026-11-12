@@ -142,16 +142,44 @@ photoTextureMonitor.rotation = Math.PI / 2;
 photoTextureMonitor.repeat.set(-1, 1);
 
 ////////////////////////////////////////////////////////////////////Setting up the Audio////////////////////////////////////////////////////////////////////////////////
-const audioContext = new AudioContext();
+// const audioContext = new AudioContext();
+// let piano = null;
+
+// Soundfont.instrument(audioContext, 'acoustic_grand_piano').then((instrument) => {
+//     piano = instrument;
+// });
+
+// function playNote(note) {
+//     if (piano) {
+//         piano.play(note); // e.g. piano.play('C4')
+//     }
+// }
+
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let piano = null;
 
 Soundfont.instrument(audioContext, 'acoustic_grand_piano').then((instrument) => {
     piano = instrument;
 });
 
+const unlockEvents = ['touchstart', 'touchend', 'click'];
+function globalUnlock() {
+    audioContext.resume().then(() => {
+        unlockEvents.forEach(e => window.removeEventListener(e, globalUnlock));
+    });
+}
+unlockEvents.forEach(e => window.addEventListener(e, globalUnlock));
+
+function unlockAudio() {
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+}
+
 function playNote(note) {
+    unlockAudio();
     if (piano) {
-        piano.play(note); // e.g. piano.play('C4')
+        piano.play(note);
     }
 }
 
