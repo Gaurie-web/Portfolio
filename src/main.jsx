@@ -142,19 +142,6 @@ photoTextureMonitor.rotation = Math.PI / 2;
 photoTextureMonitor.repeat.set(-1, 1);
 
 ////////////////////////////////////////////////////////////////////Setting up the Audio////////////////////////////////////////////////////////////////////////////////
-// const audioContext = new AudioContext();
-// let piano = null;
-
-// Soundfont.instrument(audioContext, 'acoustic_grand_piano').then((instrument) => {
-//     piano = instrument;
-// });
-
-// function playNote(note) {
-//     if (piano) {
-//         piano.play(note); // e.g. piano.play('C4')
-//     }
-// }
-
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let piano = null;
 
