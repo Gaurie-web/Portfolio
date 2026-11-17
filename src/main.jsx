@@ -154,19 +154,45 @@ Soundfont.instrument(audioContext, 'acoustic_grand_piano').then((instrument) => 
     piano = instrument;
 });
 
-const unlockEvents = ['touchstart', 'touchend', 'click'];
-function globalUnlock() {
-    audioContext.resume().then(() => {
-        unlockEvents.forEach(e => window.removeEventListener(e, globalUnlock));
-    });
+// const unlockEvents = ['touchstart', 'touchend', 'click'];
+// function globalUnlock() {
+//     audioContext.resume().then(() => {
+//         unlockEvents.forEach(e => window.removeEventListener(e, globalUnlock));
+//     });
+// }
+// unlockEvents.forEach(e => window.addEventListener(e, globalUnlock));
+
+// function unlockAudio() {
+//     if (audioContext.state === 'suspended') {
+//         audioContext.resume();
+//     }
+// }
+
+// iOS 16.4+: tell Safari this page plays media, so the silent switch doesn't mute it
+if (navigator.audioSession) {
+    navigator.audioSession.type = 'playback';
 }
-unlockEvents.forEach(e => window.addEventListener(e, globalUnlock));
+
+// Tiny silent clip: playing an <audio> element on older iOS has the same effect
+const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
 
 function unlockAudio() {
-    if (audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
+    // Must run inside a gesture, and 'touchend' / 'pointerup' / 'click' count on iOS ('touchstart' does not)
+    const silent = new Audio(SILENT_WAV);
+    silent.play().catch(() => {});
+
+    audioContext.resume().then(() => {
+        if (audioContext.state === 'running') {
+            ['touchend', 'pointerup', 'click'].forEach(e =>
+                window.removeEventListener(e, unlockAudio)
+            );
+        }
+    });
 }
+
+['touchend', 'pointerup', 'click'].forEach(e =>
+    window.addEventListener(e, unlockAudio)
+);
 
 function playNote(note) {
     unlockAudio();
