@@ -70,10 +70,6 @@ function setProgress(p) {
 }
 
 ////////////////////////////////////////////////////////////////////Setting up the Navigation Overlay/////////////////////////////////////////////////////////////////////
-// const hint = document.getElementById('controls-hint');
-// // setTimeout(() => { hint.style.opacity = '0'; }, 8000);
-// window.addEventListener('pointerdown', () => { hint.style.opacity = '0'; }, { once: true });
-// hint.addEventListener('transitionend', () => hint.remove());
 const hints = document.querySelectorAll('.controls-hint');
 
 window.addEventListener('pointerdown', () => {
@@ -778,19 +774,36 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const controls = new OrbitControls( camera, renderer.domElement );
 
 controls.minDistance = 2;
-controls.maxDistance = 35;
-controls.minPolarAngle = 0;
+controls.maxDistance = 30;
+
+controls.minPolarAngle = 0.5;
 controls.maxPolarAngle = Math.PI / 2;
 controls.minAzimuthAngle = 0.3;
 controls.maxAzimuthAngle = Math.PI / 2;
-controls.target.set(5.5, 26, -3.8);
+
+controls.enablePan = true;               // right-click / two-finger drag
+controls.screenSpacePanning = true;     // pan along the ground plane, not up/down the screen
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 
-camera.position.set(150, 60, 150);
+const bg = new THREE.Color(0xe4ddd3);
+scene.background = bg;
+scene.fog = new THREE.Fog(bg, 40, 120)
+
+// Limit how far the target can be panned
+const panMin = new THREE.Vector3(-2, 0, -12);
+const panMax = new THREE.Vector3(12, 8, 2);
+const before = new THREE.Vector3();
+
+controls.addEventListener('change', () => {
+    before.copy(controls.target);
+    controls.target.clamp(panMin, panMax);
+    camera.position.add(controls.target.clone().sub(before));
+});
+
 controls.update();
 
-////////////////////////////////////////////////////////////////////Setting up the flex for screen//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////Setting up the flex for screen//////////////////////////////////////////////////////////////////////////////////
 window.addEventListener('resize', () => {
     sizes.width = window.innerWidth;
     sizes.height = window.innerHeight;
@@ -802,9 +815,24 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
-camera.position.set( 36.136731587531884, 16.078256103108806, 14.082799943958182);
-controls.target.set(4.844066275819448, 3.6864958912081693, -7.602374440330694);
-controls.update();
+const desktopView = {
+    position: new THREE.Vector3(36.14, 16.08, 14.08),
+    target: new THREE.Vector3(4.84, 3.69, -7.60),
+};
+const mobileView = {
+    position: new THREE.Vector3(19.73, 8.43, 13.42), 
+    target: new THREE.Vector3(1.63, 3.69, -0.57),
+};
+
+function setInitialView() {
+    const isPortrait = window.innerWidth / window.innerHeight < 1;
+    const view = isPortrait ? mobileView : desktopView;
+    camera.position.copy(view.position);
+    controls.target.copy(view.target);
+    controls.update();
+}
+
+setInitialView(); // call once on load, replacing your current position/target lines
 
 ////////////////////////////////////////////////////////////////////Setting up the renders//////////////////////////////////////////////////////////////////////////////////////////
 const render = () => {
