@@ -410,6 +410,29 @@ body.loading > *:not(#preloader) { visibility: hidden; }
   #hint-touch { display: block; }
 }
 
+@media (hover: none) and (pointer: coarse) {
+  #hint-touch {
+    // top: calc(var(--menu-offset) + env(safe-area-inset-top));
+    // max-width: min(280px, 62vw);
+    // font-size: clamp(9px, 2.4vw + 1px, 14px);  /* ~10px on a 375px phone, caps at 14px */
+    // padding: 0.6em 0.8em;
+    top: max(10px, env(safe-area-inset-top));
+    right: max(10px, env(safe-area-inset-right));
+    left: auto;
+    max-width: min(260px, calc(100vw - 110px));  /* leaves room for the menu on the left */
+    font-size: clamp(9px, 2.4vw + 1px, 14px);
+    padding: 0.6em 0.8em;
+  }
+
+  #hint-touch .hint-row + .hint-row { margin-top: 0.45em; }
+  #hint-touch .hint-row svg { width: 1.7em; height: 1.7em; }
+}
+
+/* Very small screens: shrink a bit more */
+@media (hover: none) and (pointer: coarse) and (max-width: 360px) {
+  #hint-touch { font-size: 9px; } // max-width: 70vw;
+}
+
 /* Short landscape phones: tighten up so it fits */
 @media (max-height: 420px) {
   .controls-hint { font-size: 11px; padding: 0.6em 0.8em; }
