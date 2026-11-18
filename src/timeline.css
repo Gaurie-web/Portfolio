@@ -2,6 +2,11 @@
   --card-bg: #ceeaec;
 }
 
+/* Long words wrap instead of spilling out of the card */
+.vertical-timeline--two-columns .vertical-timeline-element-content {
+  overflow-wrap: anywhere;
+}
+
 /* Center line */
 .vertical-timeline--two-columns::before {
   width: 4px;
