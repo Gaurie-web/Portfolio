@@ -168,7 +168,7 @@ Soundfont.instrument(audioContext, 'acoustic_grand_piano').then((instrument) => 
 //     }
 // }
 
-// iOS 16.4+: tell Safari this page plays media, so the silent switch doesn't mute it
+//tell Safari this page plays media, so the silent switch doesn't mute it
 if (navigator.audioSession) {
     navigator.audioSession.type = 'playback';
 }
@@ -244,6 +244,14 @@ const { texture: calendarCanvasTexture, refresh: refreshCalendar } = createCalen
 // getting the UV to look right
 calendarCanvasTexture.center.set(0.5, 0.5);
 calendarCanvasTexture.rotation = -Math.PI / 2;
+
+/** Nudges a mesh's geometry along its own face normal, in local units. */
+function offsetAlongNormal(mesh, amount) {
+    const g = mesh.geometry;
+    g.computeVertexNormals();
+    const n = new THREE.Vector3().fromBufferAttribute(g.attributes.normal, 0);
+    g.translate(n.x * amount, n.y * amount, n.z * amount);
+}
 
 function normalizeUVs(geometry) {
     const uv = geometry.attributes.uv;
@@ -330,6 +338,21 @@ loader.load("models/portfolio_room.glb", (glb) => {
             controls.update();
             if (t < 1) requestAnimationFrame(step);
         })(t0);
+    }
+
+    const menuHints = document.getElementById('menu-hints');
+    const isMouseDevice = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const source = document.getElementById(isMouseDevice ? 'hint-desktop' : 'hint-touch');
+
+    if (menuHints && source) {
+        source.querySelectorAll('.hint-row').forEach(row => {
+            menuHints.appendChild(row.cloneNode(true));
+        });
+    }
+    if (!isMouseDevice) {
+        const rows = menuHints.querySelectorAll('.hint-row span');
+        const last = rows[rows.length - 1];
+        if (last) last.innerHTML = '<strong>Pinch or spread</strong> to zoom';
     }
 
     targets.forEach(({ label, object, modal }) => {
@@ -468,14 +491,15 @@ loader.load("models/portfolio_room.glb", (glb) => {
 ////////////////////////////////////////////////////////////////////Setting up the Calendar pt2////////////////////////////////////////////////////////////////////////////////
             if (child.name.includes('Calendar')) {
                 normalizeUVs(child.geometry);
+                offsetAlongNormal(child, 0.01);   // try 0.01 first
 
                 child.material = new THREE.MeshBasicMaterial({
                     map: calendarCanvasTexture,
-                    side: THREE.DoubleSide,
-                    depthTest: false,   // the plane sits inside/behind the frame mesh, so skip the depth check
-                    depthWrite: false,  // don't let the calendar block anything drawn after it
+                    side: THREE.DoubleSide,       // switch to FrontSide in step 4
+                    polygonOffset: true,
+                    polygonOffsetFactor: -2,
+                    polygonOffsetUnits: -2,
                 });
-                child.renderOrder = 999; // draw after the frame so the calendar ends up on top
 
                 colored = true;
             }
